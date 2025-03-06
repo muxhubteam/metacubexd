@@ -26,7 +26,6 @@ import {
   getSortedRowModel,
 } from '@tanstack/solid-table'
 import byteSize from 'byte-size'
-import dayjs from 'dayjs'
 import { uniq } from 'lodash'
 import { twMerge } from 'tailwind-merge'
 import { closeAllConnectionsAPI, closeSingleConnectionAPI } from '~/apis'
@@ -192,40 +191,42 @@ export default () => {
       enableGrouping: false,
       accessorKey: CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime,
       accessorFn: (original) => formatTimeFromNow(original.start),
-      sortingFn: (prev, next) =>
-        dayjs(prev.original.start).valueOf() -
-        dayjs(next.original.start).valueOf(),
+      // sortingFn: (prev, next) =>
+      //   dayjs(prev.original.start).valueOf() -
+      //   dayjs(next.original.start).valueOf(),
     },
     {
       header: () => t('dlSpeed'),
       enableGrouping: false,
       accessorKey: CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed,
       accessorFn: (original) => `${byteSize(original.downloadSpeed)}/s`,
-      sortingFn: (prev, next) =>
-        prev.original.downloadSpeed - next.original.downloadSpeed,
+      // sortingFn: (prev, next) =>
+      //   prev.original.downloadSpeed - next.original.downloadSpeed,
     },
     {
       header: () => t('ulSpeed'),
       enableGrouping: false,
       accessorKey: CONNECTIONS_TABLE_ACCESSOR_KEY.UlSpeed,
       accessorFn: (original) => `${byteSize(original.uploadSpeed)}/s`,
-      sortingFn: (prev, next) =>
-        prev.original.uploadSpeed - next.original.uploadSpeed,
+      // sortingFn: (prev, next) =>
+      //   prev.original.uploadSpeed - next.original.uploadSpeed,
     },
     {
       header: () => t('dl'),
       enableGrouping: false,
       accessorKey: CONNECTIONS_TABLE_ACCESSOR_KEY.Download,
       accessorFn: (original) => byteSize(original.download),
-      sortingFn: (prev, next) =>
-        prev.original.download - next.original.download,
+      sortingFn: (prev, next) => {
+        // console.log(prev, next)
+        return prev.original.download - next.original.download
+      },
     },
     {
       header: () => t('ul'),
       enableGrouping: false,
       accessorKey: CONNECTIONS_TABLE_ACCESSOR_KEY.Upload,
       accessorFn: (original) => byteSize(original.upload),
-      sortingFn: (prev, next) => prev.original.upload - next.original.upload,
+      // sortingFn: (prev, next) => prev.original.upload - next.original.upload,
     },
     {
       header: () => t('sourceIP'),
@@ -263,7 +264,7 @@ export default () => {
   const [grouping, setGrouping] = createSignal<GroupingState>([])
   const [sorting, setSorting] = makePersisted(
     createSignal<SortingState>([
-      { id: CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime, desc: true },
+      // { id: CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime, desc: true },
     ]),
     { name: 'connectionsTableSorting', storage: localStorage },
   )
@@ -294,10 +295,10 @@ export default () => {
         activeTab() === ActiveTab.activeConnections
           ? activeConnections()
           : closedConnections()
-
-      connections.sort((a, b) => {
-        return a.id.localeCompare(b.id)
-      })
+      // console.log('connections', connections)
+      // connections.sort((a, b) => {
+      //   return a.id.localeCompare(b.id)
+      // })
 
       if (!enableQuickFilter()) {
         return connections
@@ -406,7 +407,7 @@ export default () => {
 
                     return tagged?.tagName || src
                   }),
-                ).sort()}
+                )}
               >
                 {(sourceIP) => <option value={sourceIP()}>{sourceIP()}</option>}
               </Index>
@@ -418,7 +419,10 @@ export default () => {
               type="search"
               class="input input-sm join-item flex-1 input-primary"
               placeholder={t('search')}
-              onInput={(e) => setGlobalFilter(e.target.value)}
+              onInput={(e) => {
+                localStorage.setItem('search', e.target.value)
+                setGlobalFilter(e.target.value)
+              }}
             />
 
             <Button

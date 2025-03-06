@@ -20,7 +20,8 @@ const TrafficWidget: ParentComponent<{ label: JSX.Element }> = (props) => (
 
 export default () => {
   const navigate = useNavigate()
-
+  localStorage.removeItem('endpointList')
+  localStorage.removeItem('selectedEndpoint')
   if (!endpoint()) {
     navigate('/setup', { replace: true })
 

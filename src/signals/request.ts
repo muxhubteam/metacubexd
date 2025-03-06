@@ -59,12 +59,10 @@ export const useWsRequest = <T>(
   queries: Record<string, string> = {},
 ) => {
   const oldInstance = webSocketInstanceMap.get(path)
-
   if (oldInstance) {
     oldInstance.close()
     webSocketInstanceMap.delete(path)
   }
-
   const queryParams = new URLSearchParams(queries)
   queryParams.set('token', secret() ?? '')
   const ws = createReconnectingWS(
@@ -83,7 +81,6 @@ export const useWsRequest = <T>(
     if (!e) {
       return null
     }
-
     // console.log(e.data)
     return JSON.parse(event()?.data)
   })

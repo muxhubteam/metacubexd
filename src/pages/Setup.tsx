@@ -33,7 +33,6 @@ export default () => {
 
   const onEndpointSelect = async (id: string) => {
     const endpoint = endpointList().find((e) => e.id === id)
-
     if (!endpoint) return
 
     if (!(await checkEndpointAPI(endpoint.url, endpoint.secret))) return
@@ -78,6 +77,7 @@ export default () => {
     if (Object.hasOwn(data, 'host')) {
       setAccount(data.host)
       setPassword(data.secret)
+      localStorage.removeItem('endpointList')
       onSubmit({ url: data.host, secret: data.secret })
       localStorage.setItem('rows', data.rows)
       const url = window.location.origin + window.location.pathname
@@ -109,7 +109,6 @@ export default () => {
     if (!search) return
 
     const query = new URLSearchParams(search)
-    console.log('query', query)
 
     if (query.has('hostname')) {
       await onSubmit({

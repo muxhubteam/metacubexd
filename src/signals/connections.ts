@@ -48,7 +48,7 @@ export const useConnections = () => {
         const scrollTop = dom.scrollTop // 当前滚动高度
         const clientHeight = dom.clientHeight // 可视区域高度
         const scrollHeight = dom.scrollHeight // 总高度
-        console.log(scrollTop, clientHeight, scrollHeight)
+        // console.log(scrollTop, clientHeight, scrollHeight)
 
         if (scrollTop + clientHeight >= scrollHeight - 10) {
           num = num + 10
@@ -67,7 +67,7 @@ export const useConnections = () => {
     }
 
     untrack(() => {
-      const activeConns = restructRawMsgToConnection(
+      let activeConns = restructRawMsgToConnection(
         rawConns,
         activeConnections(),
       )
@@ -75,11 +75,49 @@ export const useConnections = () => {
       // console.log(JSON.stringify(activeConns))
       mergeAllConnections(activeConnections())
 
+      let isSearch = localStorage.getItem('search')
+      if (isSearch) {
+        activeConns = activeConns.filter(
+          (conn) =>
+            Object.values(conn.metadata).some(
+              (value) =>
+                typeof value === 'string' && value.startsWith(isSearch),
+            ) ||
+            Object.values(conn).some(
+              (value) =>
+                typeof value === 'string' && value.startsWith(isSearch),
+            ),
+        )
+      }
       if (!paused()) {
         const closedConns = diffClosedConnections(activeConns, allConnections())
+        if (localStorage.getItem('connectionsTableSorting')) {
+          let data = JSON.parse(
+            localStorage.getItem('connectionsTableSorting') || '',
+          )
+          if (data.length > 0 && data[0].id) {
+            let id = data[0].id
+            let desc = data[0].desc
+
+            activeConns.sort((a, b) => {
+              switch (id) {
+                case 'dl':
+                  return desc
+                    ? b.download - a.download
+                    : a.download - b.download
+                case 'ul':
+                  return desc ? a.upload - b.upload : a.upload - b.upload
+                case 'connectTime':
+                  return desc
+                    ? dayjs(a.start).valueOf() - dayjs(b.start).valueOf()
+                    : dayjs(a.start).valueOf() - dayjs(b.start).valueOf()
+              }
+            })
+          }
+        }
         setActiveConnections(
           // activeConns,
-          activeConns.slice(-num),
+          activeConns.slice(0, num),
         )
         setClosedConnections(
           closedConns.slice(-CONNECTIONS_TABLE_MAX_CLOSED_ROWS),
