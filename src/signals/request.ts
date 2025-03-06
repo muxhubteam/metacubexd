@@ -54,7 +54,6 @@ export const wsEndpointURL = () =>
   _.trimEnd(new URL(endpoint()?.url ?? '').href.replace('http', 'ws'), '/')
 
 const webSocketInstanceMap = new Map<string, ReconnectingWebSocket>()
-
 export const useWsRequest = <T>(
   path: string,
   queries: Record<string, string> = {},
@@ -68,7 +67,6 @@ export const useWsRequest = <T>(
 
   const queryParams = new URLSearchParams(queries)
   queryParams.set('token', secret() ?? '')
-
   const ws = createReconnectingWS(
     `${wsEndpointURL()}/${path}?${queryParams.toString()}`,
   )
@@ -86,6 +84,7 @@ export const useWsRequest = <T>(
       return null
     }
 
+    // console.log(e.data)
     return JSON.parse(event()?.data)
   })
 }

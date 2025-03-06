@@ -27,7 +27,6 @@ import { LogWithSeq } from '~/types'
 const fuzzyFilter: FilterFn<LogWithSeq> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value)
-
   // Store the itemRank info
   addMeta({
     itemRank,
@@ -55,7 +54,6 @@ export default () => {
     name: 'logsTableSorting',
     storage: localStorage,
   })
-
   const columns: ColumnDef<LogWithSeq>[] = [
     {
       header: t('sequence'),
@@ -92,7 +90,6 @@ export default () => {
       accessorFn: (row) => row.payload,
     },
   ]
-
   const table = createSolidTable({
     filterFns: {
       fuzzy: fuzzyFilter,

@@ -24,7 +24,8 @@ export default () => {
   const [t] = useI18n()
   const location = useLocation()
   const navigate = useNavigate()
-
+  const [account, setAccount] = createSignal('')
+  const [password, setPassword] = createSignal('')
   const onSetupSuccess = (id: string) => {
     setSelectedEndpoint(id)
     navigate('/overview', { replace: true })
@@ -70,7 +71,19 @@ export default () => {
 
     toast.error(message)
   }
+  const getParams = () => {
+    const params = new URLSearchParams(window.location.search)
+    const data = Object.fromEntries(params.entries())
 
+    if (Object.hasOwn(data, 'host')) {
+      setAccount(data.host)
+      setPassword(data.secret)
+      onSubmit({ url: data.host, secret: data.secret })
+      const url = window.location.origin + window.location.pathname
+      window.history.replaceState(null, '', url)
+    }
+    // return Object.fromEntries(params.entries())
+  }
   const { form } = createForm<z.infer<typeof schema>>({
     extend: validator({ schema }),
     onSubmit,
@@ -86,6 +99,7 @@ export default () => {
   }
 
   onMount(async () => {
+    getParams()
     const search =
       location.search ||
       window.location.search ||
@@ -94,6 +108,7 @@ export default () => {
     if (!search) return
 
     const query = new URLSearchParams(search)
+    console.log('query', query)
 
     if (query.has('hostname')) {
       await onSubmit({
@@ -133,6 +148,7 @@ export default () => {
                 class="input w-full"
                 placeholder="http(s)://{hostname}:{port}"
                 list="defaultEndpoints"
+                value={account()}
               />
 
               <datalist id="defaultEndpoints">
@@ -155,6 +171,7 @@ export default () => {
                 type="password"
                 class="input w-full"
                 placeholder="secret"
+                value={password()}
               />
             </fieldset>
 

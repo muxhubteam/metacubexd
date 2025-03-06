@@ -85,7 +85,6 @@ export default () => {
   let connectionsDetailsModalRef: HTMLDialogElement | undefined
 
   const [t] = useI18n()
-
   const [activeTab, setActiveTab] = createSignal(ActiveTab.activeConnections)
   const { activeConnections, closedConnections, paused, setPaused } =
     useConnections()

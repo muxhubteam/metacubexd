@@ -37,6 +37,27 @@ export const useConnections = () => {
     [],
   )
   const [paused, setPaused] = createSignal(false)
+  let num = Math.floor((window.innerHeight - 142) / 34)
+  const timer = setInterval(() => {
+    const dom = document.querySelector(
+      '#root > div:nth-child(1) > div > div > div.overflow-x-auto.rounded-md.bg-base-300.whitespace-nowrap',
+    )
+
+    if (dom) {
+      dom.addEventListener('scroll', () => {
+        const scrollTop = dom.scrollTop // 当前滚动高度
+        const clientHeight = dom.clientHeight // 可视区域高度
+        const scrollHeight = dom.scrollHeight // 总高度
+        console.log(scrollTop, clientHeight, scrollHeight)
+
+        if (scrollTop + clientHeight >= scrollHeight - 10) {
+          num = num + 10
+        }
+      })
+
+      clearInterval(timer)
+    }
+  }, 100)
 
   createEffect(() => {
     const rawConns = latestConnectionMsg()?.connections
@@ -51,12 +72,15 @@ export const useConnections = () => {
         activeConnections(),
       )
 
+      // console.log(JSON.stringify(activeConns))
       mergeAllConnections(activeConnections())
 
       if (!paused()) {
         const closedConns = diffClosedConnections(activeConns, allConnections())
-
-        setActiveConnections(activeConns)
+        setActiveConnections(
+          // activeConns,
+          activeConns.slice(-num),
+        )
         setClosedConnections(
           closedConns.slice(-CONNECTIONS_TABLE_MAX_CLOSED_ROWS),
         )
