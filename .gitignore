@@ -2,3 +2,5 @@
 node_modules
 dist
 .history
+.husky/pre-commit
+.husky/commit-msg

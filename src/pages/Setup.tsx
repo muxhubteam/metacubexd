@@ -79,6 +79,7 @@ export default () => {
       setAccount(data.host)
       setPassword(data.secret)
       onSubmit({ url: data.host, secret: data.secret })
+      localStorage.setItem('rows', data.rows)
       const url = window.location.origin + window.location.pathname
       window.history.replaceState(null, '', url)
     }

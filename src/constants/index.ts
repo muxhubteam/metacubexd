@@ -114,6 +114,7 @@ export enum LANG {
 export enum CONNECTIONS_TABLE_ACCESSOR_KEY {
   Details = 'details',
   Close = 'close',
+  InboundUser = 'inboundUser',
   ID = 'ID',
   Type = 'type',
   Process = 'process',
@@ -129,7 +130,6 @@ export enum CONNECTIONS_TABLE_ACCESSOR_KEY {
   SourceIP = 'sourceIP',
   SourcePort = 'sourcePort',
   Destination = 'destination',
-  InboundUser = 'inboundUser',
 }
 
 export const CONNECTIONS_TABLE_MAX_CLOSED_ROWS = 100
@@ -145,12 +145,17 @@ export const CONNECTIONS_TABLE_INITIAL_COLUMN_VISIBILITY = {
   ),
   [CONNECTIONS_TABLE_ACCESSOR_KEY.Details]: true,
   [CONNECTIONS_TABLE_ACCESSOR_KEY.Close]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser]: true,
   [CONNECTIONS_TABLE_ACCESSOR_KEY.Host]: true,
-  [CONNECTIONS_TABLE_ACCESSOR_KEY.Rule]: true,
-  [CONNECTIONS_TABLE_ACCESSOR_KEY.Chains]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.Rule]: false,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.Chains]: false,
   [CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed]: true,
   [CONNECTIONS_TABLE_ACCESSOR_KEY.UlSpeed]: true,
-  [CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.Download]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.Upload]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime]: true,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.Destination]: false,
+  [CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP]: false,
 }
 
 export enum TAILWINDCSS_SIZE {

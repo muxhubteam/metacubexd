@@ -17,7 +17,9 @@ import {
 } from '~/signals'
 
 const ProtectedResources = () => {
-  const latestConnectionMsg = useWsRequest<WsMsg>('connections')
+  const latestConnectionMsg = useWsRequest<WsMsg>('connections', {
+    rows: localStorage.getItem('rows') ?? '100',
+  })
 
   createEffect(() => setLatestConnectionMsg(latestConnectionMsg()))
 

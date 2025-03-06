@@ -105,6 +105,7 @@ export type ConnectionRawMessage = {
     specialProxy: string
     specialRules: string
     uid: number
+    limit: number
   }
 }
 
